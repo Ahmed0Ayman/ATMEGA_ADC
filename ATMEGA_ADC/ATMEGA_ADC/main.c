@@ -13,8 +13,8 @@
 
 
 ADC_Handler_t ADC_Handler ;
-
-
+float data ;
+AnalogComp_Handler_t  AComp_Handler ;
 
 int main(void)
 {
@@ -23,19 +23,33 @@ int main(void)
 	ADC_Handler.ADC_PreScaler = ADC_Presaler_2 ;
 	ADC_Handler.ADC_TRIG_SOURCE = ADC_TRIG_FREE_RUNNING ;
 	ADC_Handler.ADC_Vref_Select = ADC_Vref_AVCC ;
-	ADC_INIT(&ADC_Handler);
+//	ADC_INIT(&ADC_Handler);
 
-	
-	DDRD =0xff ;
-	
+	AComp_Handler.Analog_Comp_Interrupt = AComp_INIT_EN ;
+	AComp_Handler.Analog_Comp_NegPin_Select = AComp_PIN_AIN1 ;
+	AComp_Handler.Analog_Comp_OutEnable = AComp_OUT_EN ;
+
+	AComp_Init(&AComp_Handler);
+	AComp_Start(&AComp_Handler);
+	DDRD = 0xff ;
     /* Replace with your application code */
     while (1) 
     {
+		if (AComp_Get())
+		{
+			PORTD ^= 0xff ;
+		}
 		//PORTD = 0xff;//(uint8_t)ADC_Handler.ADC_Value ;
 
-		ADC_GET_VALUE(&ADC_Handler,ADC_CH_0);
-		PORTD = (uint8_t)ADC_Handler.ADC_Value ; 
-		_delay_ms(500);
+		//ADC_GET_VALUE(&ADC_Handler,ADC_CH_0);
+		//data =  (uint8_t)ADC_Handler.ADC_Value ; 
+		//_delay_ms(500);
     }
 }
 
+ISR(ANA_COMP_vect)
+{
+			PORTD ^= 0xff ;
+	_delay_ms(100);
+	
+}

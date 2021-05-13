@@ -110,3 +110,38 @@ PUBLIC void ADC_GET_VALUE(ADC_Handler_t *Handler,uint8_t AdcChannel)
 		Handler->ADC_Value =  ((value+1) * 2.56f)/1024 ;              
 		
 }/* END_FUN ADC_GET_VALUE()*/
+
+
+
+PUBLIC void AComp_Init(AnalogComp_Handler_t * Handler)
+{
+	SFIOR &=  ~(1<<ACME);
+	SFIOR |= (Handler->Analog_Comp_NegPin_Select) & (1<<ACME) ;
+	ADMUX &=  ~(0xf8);
+	ADMUX |= Handler->Analog_Comp_NegPin_Select & (0x07);
+	
+	if (Handler->Analog_Comp_Interrupt == AComp_INIT_EN)
+	{
+		ACSR |= (1<<ACIE);
+		sei();	
+	}else{
+		ACSR &=~(1<<ACIE);
+	}
+	
+	
+}
+
+PUBLIC void AComp_Start(AnalogComp_Handler_t * handler)
+{
+	
+	SFIOR |= handler->Analog_Comp_OutEnable ;
+	
+}
+
+PUBLIC bool AComp_Get(void)
+{
+	
+	return (ACSR & (1<<ACI)) ;
+	
+}
+
