@@ -30,7 +30,6 @@ int main(void)
 	AComp_Handler.Analog_Comp_OutEnable = AComp_OUT_EN ;
 
 	AComp_Init(&AComp_Handler);
-	AComp_Start(&AComp_Handler);
 	DDRD = 0xff ;
     /* Replace with your application code */
     while (1) 

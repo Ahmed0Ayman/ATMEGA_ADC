@@ -131,17 +131,11 @@ PUBLIC void AComp_Init(AnalogComp_Handler_t * Handler)
 	
 }
 
-PUBLIC void AComp_Start(AnalogComp_Handler_t * handler)
-{
-	
-	SFIOR |= handler->Analog_Comp_OutEnable ;
-	
-}
 
 PUBLIC bool AComp_Get(void)
 {
 	
-	return (ACSR & (1<<ACI)) ;
+	return (ACSR & (1<<ACO)) ;
 	
 }
 

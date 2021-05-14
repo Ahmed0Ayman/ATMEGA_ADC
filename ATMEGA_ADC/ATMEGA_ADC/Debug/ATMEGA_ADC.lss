@@ -3,31 +3,31 @@ ATMEGA_ADC.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         00000148  00000000  00000000  00000074  2**1
+  0 .text         00000136  00000000  00000000  00000074  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  000001bc  2**0
+  1 .data         00000000  00800060  00800060  000001aa  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .bss          00000010  00800060  00800060  000001bc  2**0
+  2 .bss          00000010  00800060  00800060  000001aa  2**0
                   ALLOC
-  3 .comment      00000030  00000000  00000000  000001bc  2**0
+  3 .comment      00000030  00000000  00000000  000001aa  2**0
                   CONTENTS, READONLY
-  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000001ec  2**2
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000001dc  2**2
                   CONTENTS, READONLY
-  5 .debug_aranges 00000070  00000000  00000000  00000228  2**0
+  5 .debug_aranges 00000068  00000000  00000000  00000218  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_info   00000a4c  00000000  00000000  00000298  2**0
+  6 .debug_info   000009f9  00000000  00000000  00000280  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_abbrev 00000703  00000000  00000000  00000ce4  2**0
+  7 .debug_abbrev 00000703  00000000  00000000  00000c79  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_line   0000048e  00000000  00000000  000013e7  2**0
+  8 .debug_line   00000471  00000000  00000000  0000137c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_frame  000000d4  00000000  00000000  00001878  2**2
+  9 .debug_frame  000000c4  00000000  00000000  000017f0  2**2
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_str    000004f5  00000000  00000000  0000194c  2**0
+ 10 .debug_str    000004e1  00000000  00000000  000018b4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_loc    0000021e  00000000  00000000  00001e41  2**0
+ 11 .debug_loc    000001f6  00000000  00000000  00001d95  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_ranges 00000050  00000000  00000000  0000205f  2**0
+ 12 .debug_ranges 00000048  00000000  00000000  00001f8b  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -51,7 +51,7 @@ Disassembly of section .text:
   3c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
   40:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
   44:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
-  48:	0c 94 86 00 	jmp	0x10c	; 0x10c <__vector_18>
+  48:	0c 94 7d 00 	jmp	0xfa	; 0xfa <__vector_18>
   4c:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
   50:	0c 94 3c 00 	jmp	0x78	; 0x78 <__bad_interrupt>
 
@@ -76,8 +76,8 @@ Disassembly of section .text:
   6a:	a0 37       	cpi	r26, 0x70	; 112
   6c:	b2 07       	cpc	r27, r18
   6e:	e1 f7       	brne	.-8      	; 0x68 <.do_clear_bss_loop>
-  70:	0e 94 65 00 	call	0xca	; 0xca <main>
-  74:	0c 94 a2 00 	jmp	0x144	; 0x144 <_exit>
+  70:	0e 94 60 00 	call	0xc0	; 0xc0 <main>
+  74:	0c 94 99 00 	jmp	0x132	; 0x132 <_exit>
 
 00000078 <__bad_interrupt>:
   78:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -130,139 +130,122 @@ PUBLIC void AComp_Init(AnalogComp_Handler_t * Handler)
   b2:	88 b9       	out	0x08, r24	; 8
   b4:	08 95       	ret
 
-000000b6 <AComp_Start>:
-}
+000000b6 <AComp_Get>:
 
-PUBLIC void AComp_Start(AnalogComp_Handler_t * handler)
-{
-	
-	SFIOR |= handler->Analog_Comp_OutEnable ;
-  b6:	20 b7       	in	r18, 0x30	; 48
-  b8:	fc 01       	movw	r30, r24
-  ba:	81 81       	ldd	r24, Z+1	; 0x01
-  bc:	82 2b       	or	r24, r18
-  be:	80 bf       	out	0x30, r24	; 48
-  c0:	08 95       	ret
-
-000000c2 <AComp_Get>:
-}
 
 PUBLIC bool AComp_Get(void)
 {
 	
-	return (ACSR & (1<<ACI)) ;
-  c2:	88 b1       	in	r24, 0x08	; 8
+	return (ACSR & (1<<ACO)) ;
+  b6:	88 b1       	in	r24, 0x08	; 8
 	
 }
-  c4:	82 95       	swap	r24
-  c6:	81 70       	andi	r24, 0x01	; 1
-  c8:	08 95       	ret
+  b8:	85 fb       	bst	r24, 5
+  ba:	88 27       	eor	r24, r24
+  bc:	80 f9       	bld	r24, 0
+  be:	08 95       	ret
 
-000000ca <main>:
+000000c0 <main>:
 float data ;
 AnalogComp_Handler_t  AComp_Handler ;
 
 int main(void)
 {
 	ADC_Handler.ADC_Adjust_Select = ADC_Adjust_Right ;
-  ca:	e0 e6       	ldi	r30, 0x60	; 96
-  cc:	f0 e0       	ldi	r31, 0x00	; 0
-  ce:	12 82       	std	Z+2, r1	; 0x02
+  c0:	e0 e6       	ldi	r30, 0x60	; 96
+  c2:	f0 e0       	ldi	r31, 0x00	; 0
+  c4:	12 82       	std	Z+2, r1	; 0x02
 	ADC_Handler.ADC_Intrrupet_Select = ADC_INIT_DISABLE ;
-  d0:	13 82       	std	Z+3, r1	; 0x03
+  c6:	13 82       	std	Z+3, r1	; 0x03
 	ADC_Handler.ADC_PreScaler = ADC_Presaler_2 ;
-  d2:	81 e0       	ldi	r24, 0x01	; 1
-  d4:	81 83       	std	Z+1, r24	; 0x01
+  c8:	81 e0       	ldi	r24, 0x01	; 1
+  ca:	81 83       	std	Z+1, r24	; 0x01
 	ADC_Handler.ADC_TRIG_SOURCE = ADC_TRIG_FREE_RUNNING ;
-  d6:	10 82       	st	Z, r1
+  cc:	10 82       	st	Z, r1
 	ADC_Handler.ADC_Vref_Select = ADC_Vref_AVCC ;
-  d8:	80 e4       	ldi	r24, 0x40	; 64
-  da:	84 83       	std	Z+4, r24	; 0x04
+  ce:	80 e4       	ldi	r24, 0x40	; 64
+  d0:	84 83       	std	Z+4, r24	; 0x04
 //	ADC_INIT(&ADC_Handler);
 
 	AComp_Handler.Analog_Comp_Interrupt = AComp_INIT_EN ;
-  dc:	e9 e6       	ldi	r30, 0x69	; 105
-  de:	f0 e0       	ldi	r31, 0x00	; 0
-  e0:	88 e0       	ldi	r24, 0x08	; 8
-  e2:	82 83       	std	Z+2, r24	; 0x02
+  d2:	e9 e6       	ldi	r30, 0x69	; 105
+  d4:	f0 e0       	ldi	r31, 0x00	; 0
+  d6:	88 e0       	ldi	r24, 0x08	; 8
+  d8:	82 83       	std	Z+2, r24	; 0x02
 	AComp_Handler.Analog_Comp_NegPin_Select = AComp_PIN_AIN1 ;
-  e4:	10 82       	st	Z, r1
+  da:	10 82       	st	Z, r1
 	AComp_Handler.Analog_Comp_OutEnable = AComp_OUT_EN ;
-  e6:	80 e2       	ldi	r24, 0x20	; 32
-  e8:	81 83       	std	Z+1, r24	; 0x01
+  dc:	80 e2       	ldi	r24, 0x20	; 32
+  de:	81 83       	std	Z+1, r24	; 0x01
 
 	AComp_Init(&AComp_Handler);
-  ea:	cf 01       	movw	r24, r30
-  ec:	0e 94 3e 00 	call	0x7c	; 0x7c <AComp_Init>
-	AComp_Start(&AComp_Handler);
-  f0:	89 e6       	ldi	r24, 0x69	; 105
-  f2:	90 e0       	ldi	r25, 0x00	; 0
-  f4:	0e 94 5b 00 	call	0xb6	; 0xb6 <AComp_Start>
+  e0:	cf 01       	movw	r24, r30
+  e2:	0e 94 3e 00 	call	0x7c	; 0x7c <AComp_Init>
 	DDRD = 0xff ;
-  f8:	8f ef       	ldi	r24, 0xFF	; 255
-  fa:	81 bb       	out	0x11, r24	; 17
+  e6:	8f ef       	ldi	r24, 0xFF	; 255
+  e8:	81 bb       	out	0x11, r24	; 17
     /* Replace with your application code */
     while (1) 
     {
 		if (AComp_Get())
-  fc:	0e 94 61 00 	call	0xc2	; 0xc2 <AComp_Get>
- 100:	88 23       	and	r24, r24
- 102:	e1 f3       	breq	.-8      	; 0xfc <main+0x32>
+  ea:	0e 94 5b 00 	call	0xb6	; 0xb6 <AComp_Get>
+  ee:	88 23       	and	r24, r24
+  f0:	e1 f3       	breq	.-8      	; 0xea <main+0x2a>
 		{
 			PORTD ^= 0xff ;
- 104:	82 b3       	in	r24, 0x12	; 18
- 106:	80 95       	com	r24
- 108:	82 bb       	out	0x12, r24	; 18
- 10a:	f8 cf       	rjmp	.-16     	; 0xfc <main+0x32>
+  f2:	82 b3       	in	r24, 0x12	; 18
+  f4:	80 95       	com	r24
+  f6:	82 bb       	out	0x12, r24	; 18
+  f8:	f8 cf       	rjmp	.-16     	; 0xea <main+0x2a>
 
-0000010c <__vector_18>:
+000000fa <__vector_18>:
 		//_delay_ms(500);
     }
 }
 
 ISR(ANA_COMP_vect)
 {
- 10c:	1f 92       	push	r1
- 10e:	0f 92       	push	r0
- 110:	0f b6       	in	r0, 0x3f	; 63
- 112:	0f 92       	push	r0
- 114:	11 24       	eor	r1, r1
- 116:	2f 93       	push	r18
- 118:	8f 93       	push	r24
- 11a:	9f 93       	push	r25
+  fa:	1f 92       	push	r1
+  fc:	0f 92       	push	r0
+  fe:	0f b6       	in	r0, 0x3f	; 63
+ 100:	0f 92       	push	r0
+ 102:	11 24       	eor	r1, r1
+ 104:	2f 93       	push	r18
+ 106:	8f 93       	push	r24
+ 108:	9f 93       	push	r25
 			PORTD ^= 0xff ;
- 11c:	82 b3       	in	r24, 0x12	; 18
- 11e:	80 95       	com	r24
- 120:	82 bb       	out	0x12, r24	; 18
+ 10a:	82 b3       	in	r24, 0x12	; 18
+ 10c:	80 95       	com	r24
+ 10e:	82 bb       	out	0x12, r24	; 18
 	#else
 		//round up by default
 		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
 	#endif
 
 	__builtin_avr_delay_cycles(__ticks_dc);
- 122:	2f ef       	ldi	r18, 0xFF	; 255
- 124:	81 ee       	ldi	r24, 0xE1	; 225
- 126:	94 e0       	ldi	r25, 0x04	; 4
- 128:	21 50       	subi	r18, 0x01	; 1
- 12a:	80 40       	sbci	r24, 0x00	; 0
- 12c:	90 40       	sbci	r25, 0x00	; 0
- 12e:	e1 f7       	brne	.-8      	; 0x128 <__vector_18+0x1c>
- 130:	00 c0       	rjmp	.+0      	; 0x132 <__vector_18+0x26>
- 132:	00 00       	nop
+ 110:	2f ef       	ldi	r18, 0xFF	; 255
+ 112:	81 ee       	ldi	r24, 0xE1	; 225
+ 114:	94 e0       	ldi	r25, 0x04	; 4
+ 116:	21 50       	subi	r18, 0x01	; 1
+ 118:	80 40       	sbci	r24, 0x00	; 0
+ 11a:	90 40       	sbci	r25, 0x00	; 0
+ 11c:	e1 f7       	brne	.-8      	; 0x116 <__vector_18+0x1c>
+ 11e:	00 c0       	rjmp	.+0      	; 0x120 <__vector_18+0x26>
+ 120:	00 00       	nop
 	_delay_ms(100);
 	
 }
- 134:	9f 91       	pop	r25
- 136:	8f 91       	pop	r24
- 138:	2f 91       	pop	r18
- 13a:	0f 90       	pop	r0
- 13c:	0f be       	out	0x3f, r0	; 63
- 13e:	0f 90       	pop	r0
- 140:	1f 90       	pop	r1
- 142:	18 95       	reti
+ 122:	9f 91       	pop	r25
+ 124:	8f 91       	pop	r24
+ 126:	2f 91       	pop	r18
+ 128:	0f 90       	pop	r0
+ 12a:	0f be       	out	0x3f, r0	; 63
+ 12c:	0f 90       	pop	r0
+ 12e:	1f 90       	pop	r1
+ 130:	18 95       	reti
 
-00000144 <_exit>:
- 144:	f8 94       	cli
+00000132 <_exit>:
+ 132:	f8 94       	cli
 
-00000146 <__stop_program>:
- 146:	ff cf       	rjmp	.-2      	; 0x146 <__stop_program>
+00000134 <__stop_program>:
+ 134:	ff cf       	rjmp	.-2      	; 0x134 <__stop_program>
